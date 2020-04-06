@@ -7,12 +7,12 @@ class PostsController {
     req: Request<{ searchParams: string; type: string; page: string }>,
     res: Response
   ) {
-    const { searchParams, type, page, itemsPerPage } = req.query;
-    const itemsPage = itemsPerPage || "10";
+    const { searchParams = "", type, page = 1, itemsPerPage } = req.query;
+    const itemsPage = itemsPerPage || "9";
     const offset = (Number(page) - 1) * Number(itemsPage);
-    const user = await User.find({
+    const users = await User.find({
       skip: offset,
-      take: Number(itemsPerPage),
+      take: Number(itemsPage),
       where: [
         {
           type,
@@ -26,9 +26,35 @@ class PostsController {
       order: {
         name: "ASC",
       },
-      select: ["name", "id", "zap", "address", "productType"],
+      relations: ["post", "icon"],
+      select: ["name", "id", "zap", "productType", "post", "icon"],
     });
-    return res.json(user);
+    const total = await User.count({
+      skip: offset,
+      take: Number(itemsPage),
+      where: [
+        {
+          type,
+          name: ILike(`%${searchParams}%`),
+        },
+        {
+          type,
+          productType: ILike(`%${searchParams}%`),
+        },
+      ],
+      order: {
+        name: "ASC",
+      },
+      relations: ["post", "icon"],
+      select: ["name", "id", "zap", "productType", "post", "icon"],
+    });
+    return res.json({
+      total,
+      items: users.length,
+      currentPage: page,
+      pages: Math.ceil(total / itemsPage),
+      users,
+    });
   }
 
   async show(req: Request<{ postId: string }>, res: Response) {

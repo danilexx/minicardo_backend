@@ -7,7 +7,8 @@ class SessionController {
     const { email, password } = req.body;
     const user = await User.findOne({
       where: { email },
-      select: ["passwordHash", "email", "id", "name", "type"],
+      relations: ["icon"],
+      select: ["passwordHash", "email", "id", "name", "type", "icon"],
     });
     if (!user) {
       return res.status(401).json({

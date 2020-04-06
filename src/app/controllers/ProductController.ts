@@ -42,12 +42,15 @@ class ProductController {
     const { user } = req;
     const { id } = req.params;
     const product = await Product.findOne(id);
-    await product.remove();
-    if (product.user.id !== user.id) {
-      return res.status(404).json({
-        error: "Esse produto não te pertence",
-      });
+    if (product) {
+      await product.remove();
+      if (product.user.id !== user.id) {
+        return res.status(404).json({
+          error: "Esse produto não te pertence",
+        });
+      }
     }
+
     return res.json({ ok: true });
   }
 }

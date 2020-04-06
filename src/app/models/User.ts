@@ -106,7 +106,13 @@ export class User extends BaseEntity {
 
   generateToken() {
     return jwt.sign(
-      { id: this.id, email: this.email, name: this.name, type: this.type },
+      {
+        id: this.id,
+        email: this.email,
+        icon: this.icon?.url || null,
+        name: this.name,
+        type: this.type,
+      },
       authConfig.secret,
       {
         expiresIn: authConfig.expiresIn,
