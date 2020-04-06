@@ -1,6 +1,6 @@
 {
-  "name": "whit-server",
-  "description": "server to the whitthoeft store site",
+  "name": "minicardoback",
+  "description": "minicardo backend",
   "version": "1.0.0",
   "main": "./src/index.js",
   "repository": "https://github.com/danilexx/whit-server",
