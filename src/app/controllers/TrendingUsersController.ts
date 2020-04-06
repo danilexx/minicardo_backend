@@ -14,7 +14,9 @@ class TrendingUsersController {
       relations: ["post", "icon"],
       select: ["name", "id", "zap", "productType", "post", "icon", "clicked"],
     });
-    users.length = 3;
+    if (users.length > 3) {
+      users.length = 3;
+    }
     return res.json(users);
   }
 }
